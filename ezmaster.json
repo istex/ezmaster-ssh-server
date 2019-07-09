@@ -1,0 +1,7 @@
+{ 
+    "httpPort": 80, 
+    "configPath": "/app/config.json", 
+    "configType": "text", 
+    "dataPath": "/data", 
+    "technicalApplication": true 
+}
