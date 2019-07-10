@@ -24,6 +24,13 @@ sed -ir 's/#HostKey \/etc\/ssh\/ssh_host_ed25519_key/HostKey \/etc\/ssh\/ssh_hos
 /usr/bin/ssh-keygen -A
 ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_key
 
+# AUTHORISE SOME HOSTS TO CONNECT VIA SSH KEY
+if [ "${SSHSERVER_AUTHORIZED_KEYS}" != "" ]; then
+    echo "ajout clé publique $SSHSERVER_AUTHORIZED_KEYS"
+    mkdir -p /root/.ssh
+    echo "${SSHSERVER_AUTHORIZED_KEYS}" > /root/.ssh/authorized_keys
+fi
+
 
 chmod 1777 /data
 

@@ -1,3 +1,4 @@
 {
-    "SSHSERVER_PASSWORD":"mdpracine"
+    "SSHSERVER_PASSWORD":"mdpracine",
+    "SSHSERVER_AUTHORIZED_KEYS":"put your public keys here"
 }
