@@ -12,28 +12,29 @@ else
     echo "cannot read config.env file"
 fi
 
-# GENERATE SSH KEYS
-echo "root:${SSHSERVER_PASSWORD}" | chpasswd
-sed -ie 's/#Port 22/Port 22/g' /etc/ssh/sshd_config
-sed -ri 's/#HostKey \/etc\/ssh\/ssh_host_key/HostKey \/etc\/ssh\/ssh_host_key/g' /etc/ssh/sshd_config
-sed -ir 's/#HostKey \/etc\/ssh\/ssh_host_rsa_key/HostKey \/etc\/ssh\/ssh_host_rsa_key/g' /etc/ssh/sshd_config
-sed -ir 's/#HostKey \/etc\/ssh\/ssh_host_dsa_key/HostKey \/etc\/ssh\/ssh_host_dsa_key/g' /etc/ssh/sshd_config
-sed -ir 's/#HostKey \/etc\/ssh\/ssh_host_ecdsa_key/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/g' /etc/ssh/sshd_config
-sed -ir 's/#HostKey \/etc\/ssh\/ssh_host_ed25519_key/HostKey \/etc\/ssh\/ssh_host_ed25519_key/g' /etc/ssh/sshd_config
+if [[ ! -f "/etc/ssh/ssh_host_key" ]]; then
 
-/usr/bin/ssh-keygen -A
-ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_key
-
-# AUTHORISE SOME HOSTS TO CONNECT VIA SSH KEY
-if [ "${SSHSERVER_AUTHORIZED_KEYS}" != "" ]; then
-    echo "ajout clé publique $SSHSERVER_AUTHORIZED_KEYS"
+    echo "${SSHSERVER_AUTHORIZED_KEYS}" > /etc/ssh/authorized_keys
     mkdir -p /root/.ssh
     echo "${SSHSERVER_AUTHORIZED_KEYS}" > /root/.ssh/authorized_keys
-fi
+    echo "file authorized_keys written"
 
+    # GENERATE SSH KEYS
+    echo "root:${SSHSERVER_ROOT_PASSWORD}" | chpasswd
+    sed -ie 's/#Port 22/Port 22/g' /etc/ssh/sshd_config
+    sed -ri 's/#HostKey \/etc\/ssh\/ssh_host_key/HostKey \/etc\/ssh\/ssh_host_key/g' /etc/ssh/sshd_config
+    sed -ir 's/#HostKey \/etc\/ssh\/ssh_host_rsa_key/HostKey \/etc\/ssh\/ssh_host_rsa_key/g' /etc/ssh/sshd_config
+    sed -ir 's/#HostKey \/etc\/ssh\/ssh_host_dsa_key/HostKey \/etc\/ssh\/ssh_host_dsa_key/g' /etc/ssh/sshd_config
+    sed -ir 's/#HostKey \/etc\/ssh\/ssh_host_ecdsa_key/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/g' /etc/ssh/sshd_config
+    sed -ir 's/#HostKey \/etc\/ssh\/ssh_host_ed25519_key/HostKey \/etc\/ssh\/ssh_host_ed25519_key/g' /etc/ssh/sshd_config
 
-chmod 1777 /data
+    /usr/bin/ssh-keygen -A
+    ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_key -N "${SSHSERVER_SSH_PASSPHRASE}"
+    chmod 1777 /data
+fi 
 
 # STARTING HTTP and SSH SERVERS
 cd /www && python -m SimpleHTTPServer 80 &
-exec /usr/sbin/sshd -D -d
+
+echo "starting ssh server..."
+exec /usr/sbin/sshd -D
