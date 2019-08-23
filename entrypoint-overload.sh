@@ -12,12 +12,12 @@ else
     echo "cannot read config.env file"
 fi
 
-if [[ ! -f "/etc/ssh/ssh_host_key" ]]; then
-
     echo "${SSHSERVER_AUTHORIZED_KEYS}" > /etc/ssh/authorized_keys
     mkdir -p /root/.ssh
     echo "${SSHSERVER_AUTHORIZED_KEYS}" > /root/.ssh/authorized_keys
     echo "file authorized_keys written"
+
+if [[ ! -f "/etc/ssh/ssh_host_key" ]]; then
 
     # GENERATE SSH KEYS
     echo "root:${SSHSERVER_ROOT_PASSWORD}" | chpasswd
