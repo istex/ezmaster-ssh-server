@@ -24,7 +24,7 @@ RUN echo '{ \
   "configPath": "/app/config.json", \
   "configType": "json", \
   "dataPath": "/data", \
-  "technicalApplication": true \
+  "technicalApplication": true, \
   "capabilities": "SYS_ADMIN" \
 }' > /etc/ezmaster.json
 
