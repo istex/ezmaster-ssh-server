@@ -25,6 +25,7 @@ RUN echo '{ \
   "configType": "json", \
   "dataPath": "/data", \
   "technicalApplication": true \
+  "capabilities": "SYS_ADMIN" \
 }' > /etc/ezmaster.json
 
 EXPOSE 22 80
